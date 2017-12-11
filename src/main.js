@@ -14,6 +14,7 @@ import PhotoList from './components/Photo/PhotoList.vue'
 import PhotoDetail from './components/Photo/PhotoDetail.vue'
 
 import GoodsList from './components/Goods/GoodsList.vue'
+import GoodsDetail from './components/Goods/GoodsDetail.vue'
 // 路由相关组件 结束
 
 
@@ -71,6 +72,7 @@ router.addRoutes([
   {name:'photo.detail', path:'/photo/detail/:imgId', component: PhotoDetail},//图文详情
   // {name:'test', path:'/test', component: GoodsListTest},//测试路由
   {name:'goods.list', path:'/goods/list', component:GoodsList},//商品列表
+  {name:'goods.detail', path:'/goods/detail/:goodsId',component:GoodsDetail},//商品详情
 ])
   
 // VueRouter 结束

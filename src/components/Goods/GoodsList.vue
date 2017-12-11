@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div :style="'height:' + height">
     <nav-bar title="商品列表"></nav-bar>
     <mt-loadmore :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" ref="loadmore" :auto-fill="isAutoFill">
-      <ul>
+      <ul ref="ul">
         <li v-for="goods in goodsList" :key="goods.id">
-          <a>
+          <router-link :to="{name:'goods.detail',params:{goodsId:goods.id}}">
             <img :src="goods.img_url">
-            <div class="title">{{goods.title|convetTitle(25)}}</div>
+            <div class="title">{{goods.title|convertTitle(25)}}</div>
             <div class="desc">
               <div class="sell">
                 <span>￥{{goods.sell_price}}</span>
@@ -21,7 +21,7 @@
                 </div>
               </div>
             </div>
-          </a>
+          </router-link>
         </li>
       </ul>
     </mt-loadmore>
@@ -29,11 +29,46 @@
 </template>
 <script>
   export default {
+    props:['appRefs'],//接受app里的头和底部
     data() {
       return {
         goodsList: [],
         page: 1,
+        allLoaded: false,//数据是否全部加载完毕，如果是，禁止函数调用
+        isAutoFill:false,//是否自动检测，并调用loadBottom
+        height:''//根节点div高度
       }
+    },
+    methods:{
+      // 触发上拉函数
+      loadBottom(){
+        this.$axios.get(`getgoods?pageindex=${this.page}`)
+        .then(res=>{
+          // 判断下拉是否还有数据
+          if(res.data.message.length ==0){
+            this.$toast({
+              message: '提示:没有更多数据了',
+              duration: 2000
+            })
+            //若下拉没有数据，禁止下拉刷新函数调用
+            this.allLoaded = true;
+            return
+          }
+          // 若下拉还有数据 追加下一页数据
+          this.goodsList = this.goodsList.concat(res.data.message)
+          this.page++
+          // 将加载状态通知回到pull初始状态
+          this.$refs.loadmore.onBottomLoaded() 
+        })
+        .catch(err=>{console.log(err)})
+      },
+      changeHeight(){
+        this.height= document.documentElement.clientHeight - 
+        this.appRefs.header.$el.offsetHeight
+      }
+    },
+    mouted(){ //操作dom
+      this.changeHeight()
     },
     created() {
       // 获取路由参数
