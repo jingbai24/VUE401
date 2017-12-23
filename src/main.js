@@ -28,6 +28,8 @@ import MyUl from './components/Commons/MyUl.vue'
 import MyLi from './components/Commons/MyLi.vue'
 import NavBar from './components/Commons/NavBar.vue'
 import Comment from './components/Commons/Comment.vue'
+import MySwipe from './components/Commons/MySwipe.vue'
+Vue.component(MySwipe.name,MySwipe)
 Vue.component(Comment.name,Comment)
 Vue.component(NavBar.name,NavBar)
 Vue.component(MyUl.name, MyUl)
@@ -94,6 +96,18 @@ Vue.prototype.$axios= Axios
 Axios.defaults.baseURL ='http://vue.studyit.io/api/'
 // Axios.defaults.baseURL ='http://192.168.159.66:8899/api/'
 
+// 拦截器中实现loadding图标
+Axios.interceptors.request.use(config=>{
+  MintUi.Indicator.open({
+    text:'玩命加载中',
+    spinnerType:'triple-bounce'
+  })
+  return config
+})
+Axios.interceptors.response.use(response =>{
+  MintUi.Indicator.close()
+  return response
+})
 // Axios 结束
 
 

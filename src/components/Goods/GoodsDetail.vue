@@ -3,7 +3,7 @@
         <nav-bar title="商品详情"></nav-bar>
         <div class="outer-swiper">
             <div class="swiper">
-                我真的是轮播图
+                <my-swipe :url="swipeUrl"></my-swipe>
             </div>
         </div>
         <div class="product-desc">
@@ -16,16 +16,19 @@
                 <li class="number-li">购买数量：<span>-</span><span>1</span><span>+</span></li>
                 <li>
                     <mt-button type="primary">立即购买</mt-button>
-                    <mt-button type="danger">加入购物车</mt-button>
+                    <mt-button type="danger" @click="addShopcart">加入购物车</mt-button>
                 </li>
             </ul>
         </div>
-       
-            <div class="ball"></div>
+        <!-- 过渡效果必须被内置组件transition包裹。v是指的其name属性 -->
+          <transition name="myball" v-on:after-enter="afterEnter">
+            <div class="ball" v-if="showBall"></div>
+          </transition>
+
         <div class="product-props">
             <ul>
                 <li>商品参数</li>
-                <li>商品货号：{{goodsInfo.good_no}}</li>
+                <li>商品货号：{{goodsInfo.goods_no}}</li>
                 <li>库存情况：{{goodsInfo.stock_quantity}}件</li>
                 <li>上架时间：{{goodsInfo.add_time|convertTime}}</li>
             </ul>
@@ -46,12 +49,23 @@
   export default {
     data(){
       return{
-        goodsInfo:{}
+        goodsInfo:{},//商品详情信息
+        swipeUrl:'', //轮播图的url
+        showBall: false,//小球是否存在
       }
+    },
+    methods:{
+      addShopcart(){
+        this.showBall = true //小球出现，触发v-enter-active动画
+      },
+      afterEnter(){
+        this.showBall = false
+      },
     },
     created(){
       // 获取路由传递来的参数
      let goodsId = this.$route.params.goodsId
+     this.swipeUrl = `getthumimages/${this.$route.params.goodsId}`
       // 发请求
       this.$axios.get(`goods/getinfo/${goodsId}`)
       .then(res=>{
@@ -62,7 +76,11 @@
   }
 </script>
 <style scoped>
-.ball-enter-active {
+.myball-leave {
+  opacity: 0
+}
+/* 进入中的动画 */
+.myball-enter-active {
     animation: bounce-in 1s;
 }
 

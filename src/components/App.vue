@@ -3,7 +3,9 @@
     <!-- 头部 -->
     <mt-header title="401信息管理系统" ref="header"></mt-header>
 
-    <router-view class="tmpl" :appRefs="$refs"></router-view> 
+    <transition name="rv" mode="out-in">      
+      <router-view class="tmpl" :appRefs="$refs"></router-view> 
+    </transition>
 
     <mt-tabbar v-model="selected" ref="footer">
       <mt-tab-item id="home">
@@ -16,7 +18,7 @@
       </mt-tab-item>
       <mt-tab-item id="shopcart">
         <img slot="icon" src="../static/img/shopcart.png">
-        购物车
+        购物车<mt-badge size="small" type="error">30</mt-badge>
       </mt-tab-item>
       <mt-tab-item id="search">
         <img slot="icon" src="../static/img/search.png">
@@ -39,6 +41,14 @@
   }
 </script>
 <style scoped>
+.rv-enter-active, .rv-leave-active {
+  transition: opacity 1s
+}
+/*  元素移除home 默认透明度 1->0 */
+/*  元素插入news 默认透明度 0->1 */
+.rv-entry, .rv-leave-to {
+  opacity: 0
+}
   .mint-tabbar{
     position: fixed;
     bottom:0;

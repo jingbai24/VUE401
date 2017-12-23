@@ -46,7 +46,7 @@
     },
     methods: {
       sendComment() {
-        this.$axios.post(`postcomment/this.id`, `content=${this.content}`)
+        this.$axios.post(`postcomment/${this.id}`, `content=${this.content}`)
           .then(res => {
             // 调用loadByPage函数
             this.loadBypage(1) //函数内部会自增
@@ -58,7 +58,7 @@
       loadMore() {
         //判断是否有数据
         if (!this.hasData) return
-        this.$axios.get(`getcomments/:${this.id}?pageindex=${this.page}`)
+        this.$axios.get(`getcomments/${this.id}?pageindex=${this.page}`)
           .then(res => {
             this.comments = this.comments.concat(res.data.message)
             // 设置数据检查结果
@@ -81,7 +81,7 @@
             this.page++ //页码自增
           })
           .catch(err => {
-            console.log(is - error)
+            console.log(err)
           })
       }
     },
