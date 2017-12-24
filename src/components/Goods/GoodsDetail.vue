@@ -13,7 +13,7 @@
                 </span></li>
                 <li class="price-li">市场价：
                     <s>￥{{goodsInfo.market_price}}</s> 销售价：<span>￥{{goodsInfo.sell_price}}</span></li>
-                <li class="number-li">购买数量：<span>-</span><span>1</span><span>+</span></li>
+                <li class="number-li">购买数量：<span @click= "subStract">-</span><span>{{pickNum}}</span><span @click= "add">+</span></li>
                 <li>
                     <mt-button type="primary">立即购买</mt-button>
                     <mt-button type="danger" @click="addShopcart">加入购物车</mt-button>
@@ -46,21 +46,42 @@
     </div>
 </template>
 <script>
+import GoodsTools from '../Commons/GoodsTools.js'
+
+
   export default {
     data(){
       return{
         goodsInfo:{},//商品详情信息
         swipeUrl:'', //轮播图的url
         showBall: false,//小球是否存在
+        pickNum: 1,//加入购物车数量
       }
     },
     methods:{
       addShopcart(){
         this.showBall = true //小球出现，触发v-enter-active动画
+        // 测试
+        GoodsTools.addOrUpdate({
+          id:88,num:56
+        });
+        console.log(GoodsTools.getGoods());
+        console.log(GoodsTools.getTotalCount());
+        // 更改本地存储
+        // GoodsTools.addOrUpdate({
+        //   id:this.goodsInfo.id,
+        //   num: this.pickNum
+        // })
       },
       afterEnter(){
         this.showBall = false
       },
+      subStract(){
+        this.pickNum--
+      },
+      add(){
+        this.pickNum++
+      }
     },
     created(){
       // 获取路由传递来的参数
